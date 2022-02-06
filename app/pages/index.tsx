@@ -163,7 +163,7 @@ export default function Home() {
         <div className="mockup-window bg-base-300">
           <div className="grid w-full grid-cols-1 justify-center bg-base-200 px-16 py-16">
             <div className="mb-8 grid justify-center">
-              <div className="btn btn-secondary">
+              <div className="btn btn-primary">
                 <WalletMultiButton style={{ all: 'unset', width: '100%' }} />
               </div>
             </div>
