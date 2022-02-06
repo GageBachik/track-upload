@@ -271,7 +271,7 @@ export default function Home() {
                 <h2 className="mb-1">
                   {searchTrack ? 'Found Track' : 'My Tracks'}
                 </h2>
-                <div className="grid grid-cols-3">
+                <div className="grid grid-cols-3 gap-4">
                   {myTracks.map((track: any, i: number) => {
                     // CID EXAMPLE
                     const mp3 = new CID(track.account.mp3Cid)
@@ -304,7 +304,7 @@ export default function Home() {
                 </div>
 
                 <h2 className="mb-1 mt-2">All Tracks</h2>
-                <div className="grid grid-cols-3">
+                <div className="grid grid-cols-3 gap-4">
                   {tracks.map((track: any, i: number) => {
                     // CID EXAMPLE
                     const mp3 = new CID(track.account.mp3Cid)
