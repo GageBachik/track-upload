@@ -11,9 +11,9 @@ const Track: FC<TrackProps> = ({ title, id, mp3, art }) => {
   const audioRef = useRef<HTMLAudioElement>(null)
   const [playButton, setPlayButton] = useState(true)
   return (
-    <div className="card-body flex-row items-center space-x-4 text-center">
-      <div className="flex-1">
-        <h2 className="card-title">{title}</h2>{' '}
+    <div className="card-body grid grid-cols-1 items-center space-x-4 text-center">
+      <div className="">
+        <h2 className="text-md font-bold">{title}</h2>{' '}
         <div className="mb-1">
           <p className="text-2xs text-left">Track id:</p>
           <div
@@ -23,7 +23,7 @@ const Track: FC<TrackProps> = ({ title, id, mp3, art }) => {
               navigator.clipboard.writeText(id)
             }}
           >
-            {id}
+            {`${id.substring(0, 18)}...`}
           </div>
         </div>
         <div
@@ -41,13 +41,17 @@ const Track: FC<TrackProps> = ({ title, id, mp3, art }) => {
             }
           }}
         >
-          <figure>
-            <img src={art} />
+          <figure className="h-[150px] w-[150px]">
+            <img className="h-full w-full" src={art} />
           </figure>
           {playButton ? (
-            <p className="absolute left-4 top-1/3 h-full w-full text-9xl">►</p>
+            <p className="absolute left-2 top-[8rem] h-full w-full text-6xl shadow-2xl">
+              ►
+            </p>
           ) : (
-            <p className="absolute left-0 top-1/3 h-full w-full text-9xl">▮▮</p>
+            <p className="absolute left-0 top-[8rem] h-full w-full text-6xl shadow-2xl">
+              ▮▮
+            </p>
           )}
         </div>
         <audio ref={audioRef}>

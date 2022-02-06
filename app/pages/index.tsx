@@ -16,6 +16,7 @@ type programState = {
 export default function Home() {
   const wallet = useAnchorWallet()
   const [programState, setProgramState] = useState({} as programState)
+  const [searchTrack, setSearchTrack] = useState(false)
   const [tracks, setTracks] = useState([] as any)
   const [myTracks, setMyTracks] = useState([] as any)
   const [selectedTrack, setSelectedTrack] = useState(null as any)
@@ -23,6 +24,8 @@ export default function Home() {
   const titleRef = useRef<HTMLInputElement>(null)
   const mp3CidRef = useRef<HTMLInputElement>(null)
   const artCidRef = useRef<HTMLInputElement>(null)
+
+  const searchRef = useRef<HTMLInputElement>(null)
 
   const setupProgram = async () => {
     const opts = {
@@ -63,7 +66,7 @@ export default function Home() {
         },
       },
     ])
-    console.log('myTracks', myTracks)
+    // console.log('myTracks', myTracks)
     // const myTracks = await programState.program.account.track.fetch(
     //   programState.track
     // )
@@ -72,13 +75,13 @@ export default function Home() {
       setSelectedTrack(myTracks[0])
     }
     const tracks = await programState.program.account.track.all()
-    console.log('tracks', tracks)
+    // console.log('tracks', tracks)
     setTracks(tracks)
     // console.log('myTrack', myTrack)
   }
 
   const uploadTrack = async () => {
-    console.log('upload track ran')
+    // console.log('upload track ran')
     const title = titleRef.current?.value
     const mp3Cid = mp3CidRef.current?.value
     const artCid = artCidRef.current?.value
@@ -100,14 +103,14 @@ export default function Home() {
     await getMyTracks()
   }
   const updateTrack = async () => {
-    console.log('update track ran')
+    // console.log('update track ran')
     const title = titleRef.current?.value
     const mp3Cid = mp3CidRef.current?.value
     const artCid = artCidRef.current?.value
     // console.log('title', title)
     // console.log('artCid', artCid)
     // console.log('mp3Cid', mp3Cid
-    console.log('selectedTrack', selectedTrack)
+    // console.log('selectedTrack', selectedTrack)
     await programState.program.rpc.updateTrack(title, mp3Cid, artCid, {
       accounts: {
         signer: wallet!.publicKey,
@@ -119,24 +122,22 @@ export default function Home() {
     // console.log('tx', tx)
     await getMyTracks()
   }
-  const likeTrack = async (programTrack: any) => {
-    console.log('like track ran')
-    // console.log('programTrack', programTrack)
-    // track account generation (pda)
-    // const [track, _trackBump] = await anchor.web3.PublicKey.findProgramAddress(
-    //   [programTrack.signer.toBuffer()],
-    //   programState.program.programId
-    // )
-    // // console.log('track', track)
-    // await programState.program.rpc.likeTrack({
-    //   accounts: {
-    //     signer: wallet!.publicKey,
-    //     track: track,
-    //     systemProgram: anchor.web3.SystemProgram.programId,
-    //     rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-    //   },
-    // })
-    // await getMyTracks()
+
+  const findTrack = async () => {
+    const trackId = new anchor.web3.PublicKey(searchRef.current?.value!)
+    console.log('trackId', trackId.toString())
+    const track = await programState.program.account.track.all([
+      {
+        memcmp: {
+          offset: 8 + 32, // Discriminator + Signer.
+          bytes: trackId.toBase58(),
+        },
+      },
+    ])
+    console.log('track', track)
+    setMyTracks(track)
+    setSelectedTrack(track[0])
+    setSearchTrack(true)
   }
 
   useEffect(() => {
@@ -158,7 +159,7 @@ export default function Home() {
       </Head>
 
       {/* <main className="flex w-full flex-1 flex-col items-center justify-center px-20 text-center"> */}
-      <main className="w-[32rem]">
+      <main className="w-[46rem]">
         <div className="mockup-window bg-base-300">
           <div className="grid w-full grid-cols-1 justify-center bg-base-200 px-16 py-16">
             <div className="mb-8 grid justify-center">
@@ -247,37 +248,93 @@ export default function Home() {
                 <p>Please connect your wallet above to use the app.</p>
               </div>
             )}
+            <div className="mb-4 mt-[-1rem]">
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Search Track</span>
+                </label>
+                <div className="flex space-x-2">
+                  <input
+                    ref={searchRef}
+                    type="text"
+                    placeholder="Track Id"
+                    className="input-bordered input-primary input w-full"
+                  />
+                  <button className="btn btn-primary" onClick={findTrack}>
+                    Search
+                  </button>
+                </div>
+              </div>
+            </div>
             {wallet?.publicKey && (
               <div>
-                {tracks.map((track: any, i: number) => {
-                  // CID EXAMPLE
-                  const mp3 = new CID(track.account.mp3Cid)
-                    .toV1()
-                    .toString('base32')
-                  console.log('mp3: ', mp3)
-                  const art = new CID(track.account.artCid)
-                    .toV1()
-                    .toString('base32')
-                  console.log('art: ', art)
-                  const mp3Url = `https://${mp3}.ipfs.infura-ipfs.io`
-                  const artUrl = `https://${art}.ipfs.infura-ipfs.io`
-                  console.log('mp3Url: ', mp3Url)
-                  console.log('artUrl: ', artUrl)
-                  console.log('track', track)
-                  return (
-                    <div
-                      key={i}
-                      className="side card compact bg-base-100 shadow-lg"
-                    >
-                      <Track
-                        mp3={mp3Url}
-                        art={artUrl}
-                        title={track.account.title}
-                        id={track.account.id.toString()}
-                      />
-                    </div>
-                  )
-                })}
+                <h2 className="mb-1">
+                  {searchTrack ? 'Found Track' : 'My Tracks'}
+                </h2>
+                <div className="grid grid-cols-3">
+                  {myTracks.map((track: any, i: number) => {
+                    // CID EXAMPLE
+                    const mp3 = new CID(track.account.mp3Cid)
+                      .toV1()
+                      .toString('base32')
+                    // console.log('mp3: ', mp3)
+                    const art = new CID(track.account.artCid)
+                      .toV1()
+                      .toString('base32')
+                    // console.log('art: ', art)
+                    const mp3Url = `https://${mp3}.ipfs.infura-ipfs.io`
+                    const artUrl = `https://${art}.ipfs.infura-ipfs.io`
+                    // console.log('mp3Url: ', mp3Url)
+                    // console.log('artUrl: ', artUrl)
+                    // console.log('track', track)
+                    return (
+                      <div
+                        key={i}
+                        className="side card compact bg-base-100 shadow-lg"
+                      >
+                        <Track
+                          mp3={mp3Url}
+                          art={artUrl}
+                          title={track.account.title}
+                          id={track.account.id.toString()}
+                        />
+                      </div>
+                    )
+                  })}
+                </div>
+
+                <h2 className="mb-1 mt-2">All Tracks</h2>
+                <div className="grid grid-cols-3">
+                  {tracks.map((track: any, i: number) => {
+                    // CID EXAMPLE
+                    const mp3 = new CID(track.account.mp3Cid)
+                      .toV1()
+                      .toString('base32')
+                    // console.log('mp3: ', mp3)
+                    const art = new CID(track.account.artCid)
+                      .toV1()
+                      .toString('base32')
+                    // console.log('art: ', art)
+                    const mp3Url = `https://${mp3}.ipfs.infura-ipfs.io`
+                    const artUrl = `https://${art}.ipfs.infura-ipfs.io`
+                    // console.log('mp3Url: ', mp3Url)
+                    // console.log('artUrl: ', artUrl)
+                    // console.log('track', track)
+                    return (
+                      <div
+                        key={i}
+                        className="side card compact bg-base-100 shadow-lg"
+                      >
+                        <Track
+                          mp3={mp3Url}
+                          art={artUrl}
+                          title={track.account.title}
+                          id={track.account.id.toString()}
+                        />
+                      </div>
+                    )
+                  })}
+                </div>
               </div>
             )}
           </div>
