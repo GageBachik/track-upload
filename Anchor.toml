@@ -1,0 +1,16 @@
+[programs.localnet]
+track_upload = "BkYwBxc3DvKo6vKVWYBF3qjeP4Rgy5PNhmDi1iz8SBWz"
+[programs.devnet]
+track_upload = "BkYwBxc3DvKo6vKVWYBF3qjeP4Rgy5PNhmDi1iz8SBWz"
+[programs.mainnet]
+track_upload = "BkYwBxc3DvKo6vKVWYBF3qjeP4Rgy5PNhmDi1iz8SBWz"
+
+[registry]
+url = "https://anchor.projectserum.com"
+
+[provider]
+cluster = "devnet"
+wallet = "/Users/loser/.config/solana/id.json"
+
+[scripts]
+test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
