@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+#__next
+  > div
+  > main
+  > div
+  > div
+  > div.mb-8.grid.justify-center
+  > div
+  > div
+  > button
+  :hover {
+  background-color: transparent;
+}
+
+#__next
+  > div
+  > main
+  > div
+  > div
+  > div.mb-8.grid.justify-center
+  > div
+  > button
+  :hover {
+  background-color: transparent;
+}
