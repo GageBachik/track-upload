@@ -248,24 +248,26 @@ export default function Home() {
                 <p>Please connect your wallet above to use the app.</p>
               </div>
             )}
-            <div className="mb-4 mt-[-1rem]">
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Search Track</span>
-                </label>
-                <div className="flex space-x-2">
-                  <input
-                    ref={searchRef}
-                    type="text"
-                    placeholder="Track Id"
-                    className="input-bordered input-primary input w-full"
-                  />
-                  <button className="btn btn-primary" onClick={findTrack}>
-                    Search
-                  </button>
+            {wallet?.publicKey && (
+              <div className="mb-4 mt-[-1rem]">
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">Search Track</span>
+                  </label>
+                  <div className="flex space-x-2">
+                    <input
+                      ref={searchRef}
+                      type="text"
+                      placeholder="Track Id"
+                      className="input-bordered input-primary input w-full"
+                    />
+                    <button className="btn btn-primary" onClick={findTrack}>
+                      Search
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
             {wallet?.publicKey && (
               <div>
                 <h2 className="mb-1">
