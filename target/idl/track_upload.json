@@ -1,0 +1,129 @@
+{
+  "version": "0.1.0",
+  "name": "track_upload",
+  "instructions": [
+    {
+      "name": "uploadTrack",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "track",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "mp3Cid",
+          "type": "string"
+        },
+        {
+          "name": "artCid",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "updateTrack",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "track",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "mp3Cid",
+          "type": "string"
+        },
+        {
+          "name": "artCid",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Track",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "signer",
+            "type": "publicKey"
+          },
+          {
+            "name": "id",
+            "type": "publicKey"
+          },
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "mp3Cid",
+            "type": "string"
+          },
+          {
+            "name": "artCid",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "TitleTooLong",
+      "msg": "Title must be 50 characters or less"
+    },
+    {
+      "code": 6001,
+      "name": "CIDTooLong",
+      "msg": "CID must be 50 characters or less"
+    }
+  ],
+  "metadata": {
+    "address": "BkYwBxc3DvKo6vKVWYBF3qjeP4Rgy5PNhmDi1iz8SBWz"
+  }
+}
